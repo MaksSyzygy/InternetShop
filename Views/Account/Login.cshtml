@@ -1,0 +1,58 @@
+﻿@model Shop.Models.ViewModels.Account.LoginUserViewModel
+
+@{
+    ViewBag.Title = "Вход";
+}
+
+<h2>Добро пожаловать</h2>
+
+@if(TempData["OK_Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["OK_Message"]
+    </div>
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessage("errorLogin", new { @class = "text-danger" })
+                @Html.ValidationMessage("emptyField", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                @Html.ValidationMessage("errorLogin", new { @class = "text-danger" })
+                @Html.ValidationMessage("emptyField", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RememberMe, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.RememberMe)
+                    @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Войти" class="btn btn-success" />
+                &nbsp; <a href="/account/create-account" class="btn btn-info">Создать аккаунт</a>
+            </div>
+        </div>
+    </div>
+}

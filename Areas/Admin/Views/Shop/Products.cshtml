@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Shop.Models.ViewModels.Shop.ProductViewModel>
+
+@{
+    ViewBag.Title = "Products";
+}
+
+<!--Подключаем директивы для постраничного вывода-->
+@using PagedList.Mvc;
+@using PagedList;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<h2>Товары</h2>
+<select id="SelectCategory" name="SelectCategory">
+    <!--Строим структуру для вывода категорий-->
+    <option value="0">Все</option>
+    @foreach (var item in ViewBag.Categories)//Обращаемся к списку категорий в контроллере по имени
+    {
+        if (ViewBag.SelectedCat == item.Value)//если выбранная категория равняется категории из листа
+        {
+            <option selected="selected" value="@item.Value">@item.Text</option><!--value - передает id категории, Text - имя категории в выпадающем списке-->
+        }
+        else
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    }
+</select>
+
+<br /><br />
+
+<p>
+    @Html.ActionLink("Добавить новый продукт", "AddProduct", "", new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Имя товара
+        </th>
+        <th>
+            Описание
+        </th>
+        <th>
+            Стоимость
+        </th>
+        <th>
+            Картинка товара
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var product in ViewBag.onePageOfProducts)
+    {
+        <tr>
+            <td>
+                @product.Name
+            </td>
+
+            <td>
+                @product.Description
+            </td>
+
+            <td>
+                @product.Price
+            </td>
+
+            <td>
+                <a href="/admin/Shop/EditProduct/@product.Id">
+                    @if (product.ImageName == null)
+                    {
+                        <img src="~/Content/img/no_image.png" />
+                    }
+                    else
+                    {
+                        <img src="/Images/Uploads/Products/@product.Id/Thumbs/@product.ImageName" />
+                    }
+                </a>
+            </td>
+
+            <td style="display:grid">
+                @Html.ActionLink("Изменить", "EditProduct", new { id = product.Id }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Удалить", "DeleteProduct", new { id = product.Id }, new { @class = "btn btn-danger delete" })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<!--Добавляем постраничный вывод. Сначала ViewBag приводим к интерфейсу IPagedList, указываем URL на метод из контроллера, создаем анонимные типы для страницы и привязываем выбранную категорию-->
+@Html.PagedListPager((IPagedList)ViewBag.onePageOfProducts, page => Url.Action("Products", new { page, catId = ViewBag.SelectedCat }))
+
+@section Scripts
+{
+    <script src="~/Content/ShopJS/ProductsScript.js"></script>
+}

@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Shop.Models.ViewModels.Cart.CartViewModel>
+
+@{
+    ViewBag.Title = "Корзина";
+    int count = 1;
+}
+
+<h2>Корзина</h2>
+
+@if (ViewBag.Message != null)
+{
+    <h3>@ViewBag.Message</h3>
+}
+else
+{
+    <div class="ajaxbg">
+        <span>
+            <img src="~/Content/img/loading.gif" />
+        </span>
+    </div>
+
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                Товар
+            </th>
+            <th>
+                Количество
+            </th>
+            <th>
+                Стоимость
+            </th>
+            <th>
+                Вид товара
+            </th>
+            <th>
+                <!--Для кнопок изменения кол-ва товара-->
+            </th>
+            <th>
+                Стоимость
+            </th>
+            <th>
+
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td class="qty@(item.ProductId)">
+                    <!--для получения уникального id продукта-->
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price) $
+                </td>
+                <td>
+                    <img src="Images/Uploads/Products/@item.ProductId/Thumbs/@item.Image" />
+                </td>
+                <td>
+                    <div>
+                        <a href="#" class="incproduct btn btn-success" style="float:left" data-id="@item.ProductId">+</a>
+                        <a href="#" class="decproduct btn btn-info" style="float:right" data-id="@item.ProductId">-</a>
+                    </div>
+                    <a href="#" class="removeproduct btn btn-danger" style="display:flex" data-id="@item.ProductId">Удалить</a>
+                </td>
+                <td class="total@(item.ProductId)">
+                    @Html.DisplayFor(modelItem => item.Total) $
+                </td>
+            </tr>
+        }
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="finaltotal">
+                <b>Общая сумма: </b>
+                <span>@ViewBag.FinalTotal</span> $
+            </td>
+        </tr>
+
+    </table>
+
+    <!--Форма для PayPal-->
+    <div class="paypaldiv">
+        <form class="paypalform" action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_cart">
+            <input type="hidden" name="upload" value="1" />
+            <input type="hidden" name="business" value="sb-omoav1003124@business.example.com">
+
+            @foreach (var item in Model)
+            {
+                <input type="hidden" name="item_name_@count" value="@item.ProductName">
+                <input type="hidden" name="amount_@count" value="@item.Price">
+                <input type="hidden" name="quantity_@count" value="@item.Quantity">
+                count++;
+            }
+
+            <input type="hidden" name="currency_code" value="USD">
+            <div style="display:none">
+                <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+            </div>
+        </form>
+    </div>
+
+    <br />
+    <a href="#" class="placeorder btn btn-success float-right">Оплатить</a>
+}
+
+@section Scripts
+{
+    <!--Скрипт добавления кол-ва товара в корзине-->
+    <script src="~/Content/ShopJS/IncrementProductScript.js"></script>
+}

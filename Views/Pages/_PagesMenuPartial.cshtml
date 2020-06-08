@@ -1,0 +1,8 @@
+﻿@model IEnumerable<Shop.Models.ViewModels.Pages.PageViewModel>
+
+@foreach (var item in Model)
+{
+    <li class="nav-item">
+        <a class="nav-link" href="/@item.Title">@item.Title</a><!--чтоб меню работало нужно добавить дополнительный путь в RouteConfig-->
+    </li>
+}

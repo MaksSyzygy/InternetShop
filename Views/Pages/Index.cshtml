@@ -1,0 +1,8 @@
+﻿@model Shop.Models.ViewModels.Pages.PageViewModel
+
+@{
+    ViewBag.Title = ViewBag.PageTitle;
+}
+
+@Html.Raw(Model.Body)<!--выводим тело страницы через хелпер Raw. Тело формируется в редакторе CKEditor-->
+<!--Чтоб получить доступ нужно переделать Raw config-->

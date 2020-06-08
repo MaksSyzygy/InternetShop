@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Shop.Models.ViewModels.Shop.ProductViewModel>
+
+@{
+    ViewBag.Title = ViewBag.CategoryName;
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<h2>@ViewBag.CategoryName</h2>
+
+<div class="card-deck">
+    @foreach (var item in Model)
+    {
+
+        <div class="card">
+            <a href="/shop/product-details/@item.Title">
+                <img class="card-img-top" src="/Images/Uploads/Products/@item.Id/Thumbs/@item.ImageName" /><!--формируем путь к картинкам-->
+            </a>
+
+            <div class="card-body">
+                <h4 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h4>
+                <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                <p class="card-text"> @Html.DisplayFor(modelItem => item.Price) $</p>
+                <a href="/shop/product-details/@item.Title" class="btn btn-info">Детали</a>
+            </div>
+        </div>
+    }
+</div>
+
+@Html.PagedListPager((IPagedList)ViewBag.PageOfProducts, page => Url.Action("Category", new { page }))

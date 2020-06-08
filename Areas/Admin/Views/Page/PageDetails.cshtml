@@ -1,0 +1,41 @@
+﻿@model Shop.Models.ViewModels.Pages.PageViewModel
+
+@{
+    ViewBag.Title = "Page Details";
+}
+
+<h2>Page Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)<!--DisplayNameFor - отображает заданное значение из ViewModel или имя столбца из БД-->
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)<!--DisplayFor - отображает значение из БД-->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Body)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Body)<!--Raw - передаем содержимое напрямую из модели со всеми офрмлениями и стилями-->
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Редактировать", "EditPage", new { id = Model.Id }, new { @class = "btn btn-success"}) |
+    @Html.ActionLink("К списку страниц", "Index", "", new { @class = "btn btn-info"})
+</p>

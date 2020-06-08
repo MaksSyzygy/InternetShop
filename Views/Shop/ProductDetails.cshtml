@@ -1,0 +1,104 @@
+﻿@model Shop.Models.ViewModels.Shop.ProductViewModel
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+<br />
+
+<div class="row">
+    <!--Карточка товара-->
+    <div class="col-sm-12 col-md-5 imgProductBlock">
+        <!--Картинка товара-->
+        <img src="/Images/Uploads/Products/@Model.Id/Thumbs/@Model.ImageName" />
+    </div>
+
+    <div class="col-sm-12 col-md-7">
+        <!--Описание и цена-->
+        @Html.DisplayFor(model => model.Description)
+        <br />
+        @Html.DisplayFor(model => model.Price) $
+
+        @if (Request.IsAuthenticated && User.IsInRole("User"))
+        {
+            <div class="addToCart">
+                <!--Навигация добавления товара-->
+                <a href="#" class="addToCart btn btn-success">Добавить в корзину</a>
+                <span class="loader">
+                    <img src="~/Content/img/loading.gif" height="40" width="40" />
+                </span>
+                <div class="ajaxmsg">
+                    Продукт был добавлен в корзину
+                </div>
+            </div>
+        }
+        else if(Request.IsAuthenticated && User.IsInRole("Admin"))
+        {
+        }
+        else
+        {
+            <div>
+                @Html.ActionLink("Войти/Регистрация", "Login", "Account", null, new { @class = "btn btn-success" })
+            </div>
+        }
+
+    </div>
+</div>
+
+<hr />
+
+<div class="row"><!--Для вывода галерии картинок продукта нужно подключить расширение FancyBox-->
+    <h3>Галерея продукта</h3>
+    <div class="col-sm-12 fancyboxdiv">
+        <br /><br />
+        <div class="row">
+            @foreach (var item in Model.GalleryImages)
+            {
+                <div class="col">
+                    <a class="fancybox" rel="gallery1" href="/Images/Uploads/Products/@Model.Id/Gallery/@item">
+                        <img src="/Images/Uploads/Products/@Model.Id/Gallery/Thumbs/@item" />
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<p>
+    @Html.ActionLink("Назад к продуктам", $"Category/{Model.CategoryName}")
+</p>
+
+@section Scripts
+{
+    <link href="~/Content/jquery.fancybox.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.fancybox.js"></script><!--Подключаем fancybox-->
+    <script src="~/Content/ShopJS/ProductDetailsScript.js"></script><!--скрипт Fancybox - при нажатии картинка раскрывается на весь экран-->
+
+    <script>
+        /*Добавление в корзину*/
+$(function () {
+    $("a.addToCart").click(function (e) {
+        e.preventDefault();
+
+        $("span.loader").addClass("ib");
+
+        var url = "/cart/AddToCartPartial";
+
+        $.get(url, { id: @Model.Id
+        }, function (data) {
+            $(".ajaxcart").html(data);
+            }).done(function () {
+                $("span.loader").removeClass("ib");
+                $("div.ajaxmsg").addClass("ib");
+
+                setTimeout(function () {
+                    $("div.ajaxmsg").fadeOut("fast");
+                    $("div.ajaxmsg").removeClass("ib");
+                }, 2000);
+            });
+        });
+    });
+    </script>
+}

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="/">First Internet Shop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+
+                @Html.Action("PagesMenuPartial", "Pages")
+
+                @if (Request.IsAuthenticated)//Пользователь авторизован и есть линк Выйти из аккаунта
+                {
+                    <li>
+                        @Html.ActionLink("Выйти", "LogOut", "Account", null, new { @class = "navbar-text", style = "text-decoration: none" })
+                    </li>
+                }
+                else
+                {
+                    if (ViewBag.Title == "Вход")//Если не авторизован и на странице входа
+                    {
+                        <li class="navbar-text btn btn-info">
+                            @Html.ActionLink("Вход", "Login", "Account", null, new { @class = "active", style = "text-decoration: none; color: white" })
+                        </li>
+                    }
+                    else//если не авторизован и НЕ на странице входа
+                    {
+                        <li>
+                            @Html.ActionLink("Вход", "Login", "Account", null, new { @class = "navbar-text", style = "text-decoration: none" })
+                        </li>
+                    }
+                }
+
+                @if (Request.IsAuthenticated && User.IsInRole("User"))//если пользователя авторизован и его роль пользователь
+                {
+                    if (ViewBag.Title == "Личный кабинет")
+                    {
+                        <li class="active">
+                            @Html.Action("UserNavPartial", "Account", new { area = "" })
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            @Html.Action("UserNavPartial", "Account", new { area = "" })
+                        </li>
+                    }
+                }
+
+            </ul>
+
+            @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <span class="navbar-text">
+                    @Html.ActionLink("Admin Area", "Index", "Dashboard", new { area = "Admin" }, null)
+                </span>
+            }
+            else
+            {
+                if (ViewBag.Title != "Корзина")
+                {
+                    <span class="navbar-text">
+                        @Html.Action("CartPartial", "Cart")
+                    </span>
+                }
+            }
+        </div>
+    </nav>
+
+    
+    <div class="container body-content" style="margin-top:30px;"> <!--container - всегда идет первым, после идут row (ряды)-->
+        <div class="row">
+
+            <div class="col-sm-12 col-md-3 list-group">
+                @Html.Action("CategoryMenuPartial", "Shop")
+            </div>
+
+            @if (ViewBag.Sidebar == "Yes")
+            {
+                <div class="col-md-6 imgAdaptive">
+                    @RenderBody()
+                </div>
+
+                <div class="col-sm-12 col-md-3" style="text-align:center"> <!--На маленьком экране будет задействованы 12 колонок (весь экран), на средних экранах - 3 колонки-->
+                    @Html.Action("SidebarPartial", "Pages")
+                </div>
+            }
+            else
+            {
+                <div class="col-md-9 imgAdaptive">
+                    @RenderBody()
+                </div>
+            }
+        </div>
+
+        <hr />
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year – First Internet Shop</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/scripts")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

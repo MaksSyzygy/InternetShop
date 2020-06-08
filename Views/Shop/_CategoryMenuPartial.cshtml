@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Shop.Models.ViewModels.Shop.CategoryViewModel>
+
+<h3>Категории</h3>
+
+@foreach (var item in Model)
+{
+    <a class="list-group-item list-group-item-action" href="/shop/category/@item.Description.ToLower()">@item.Name</a>
+}
+
+<!--list-group-item list-group-item-action - добавляет на месте ссылок плитки-кнопки-->
